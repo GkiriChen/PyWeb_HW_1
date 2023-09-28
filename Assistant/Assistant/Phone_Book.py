@@ -8,6 +8,8 @@ from termcolor import colored, cprint
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import Completer, Completion
+from abc import ABC, abstractmethod
+
 
 class IntentCompleter(Completer):
     def __init__(self, commands):
@@ -21,6 +23,17 @@ class IntentCompleter(Completer):
         for intent in self.intents:
             if intent.startswith(word_before_cursor):
                 yield Completion(intent, start_position=-len(word_before_cursor))
+
+class IField(ABC):
+    @property
+    @abstractmethod
+    def value(self):
+        pass
+
+    @value.setter
+    @abstractmethod
+    def value(self, value):
+        pass
 
 
 class AddressBook(UserDict):
@@ -213,7 +226,7 @@ class AddressBook(UserDict):
         #     x.add_row([colored(f"{key}","blue"),colored(f"{values.show_phones()}","blue"),colored(f"{values.email}","blue"), colored(f"{values.birthday}","blue"), colored(f"{values.address}","blue")])
         # return x
     
-class Field:
+class Field(IField):
     def __init__(self, value):
         self.value = value
 
